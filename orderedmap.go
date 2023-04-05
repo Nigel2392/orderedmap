@@ -173,8 +173,12 @@ func (u *Map[T, T2]) Json(indent int) ([]byte, error) {
 	return json.MarshalIndent(newList, "", strings.Repeat(" ", indent))
 }
 
+func (u *Map[T, T2]) MarshalJSON() ([]byte, error) {
+	return u.Json(4)
+}
+
 // UnJsonify the map
-func (u *Map[T, T2]) UnJson(data []byte) error {
+func (u *Map[T, T2]) UnmarshalJSON(data []byte) error {
 	var newList = make([]mapData[T, T2], 0)
 	err := json.Unmarshal(data, &newList)
 	if err != nil {
@@ -199,7 +203,7 @@ func (u *Map[T, T2]) Scan(src interface{}) error {
 		return errors.New("Unknown type for Map[T, T2]")
 	}
 
-	return u.UnJson([]byte(srcString))
+	return u.UnmarshalJSON([]byte(srcString))
 }
 
 // Value implements the driver Valuer interface.
