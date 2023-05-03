@@ -113,6 +113,8 @@ func (u *Map[T, T2]) SortBySlice(v ...T) []T2 {
 }
 
 // Loop through all key, value pairs in order
+//
+// Option to cancel by returning false.
 func (u *Map[T, T2]) ForEach(f func(k T, v T2) bool, reverse ...bool) {
 	if len(reverse) > 0 && reverse[0] {
 		for i := len(u.order) - 1; i >= 0; i-- {
