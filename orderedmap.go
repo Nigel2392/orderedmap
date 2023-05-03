@@ -38,7 +38,7 @@ func (u *Map[T, T2]) GetOK(key T) (T2, bool) {
 }
 
 // Set a value in the map
-func (u *Map[T, T2]) Set(key T, value T2, external ...bool) {
+func (u *Map[T, T2]) Set(key T, value T2) {
 	if u.values == nil {
 		u.values = make(map[T]T2)
 		u.order = make([]T, 0)
@@ -103,24 +103,29 @@ func (u *Map[T, T2]) SortBySlice(v ...T) []T2 {
 		copy.Delete(v)
 	}
 	var i int
-	copy.ForEach(func(k T, v T2) {
+	copy.ForEach(func(k T, v T2) bool {
 		newOrder = append(newOrder, v)
 		i++
+		return true
 	})
 	return newOrder
 
 }
 
 // Loop through all key, value pairs in order
-func (u *Map[T, T2]) ForEach(f func(k T, v T2), reverse ...bool) {
+func (u *Map[T, T2]) ForEach(f func(k T, v T2) bool, reverse ...bool) {
 	if len(reverse) > 0 && reverse[0] {
 		for i := len(u.order) - 1; i >= 0; i-- {
-			f(u.order[i], u.values[u.order[i]])
+			if !f(u.order[i], u.values[u.order[i]]) {
+				return
+			}
 		}
 		return
 	}
 	for _, orderedKey := range u.order {
-		f(orderedKey, u.values[orderedKey])
+		if !f(orderedKey, u.values[orderedKey]) {
+			return
+		}
 	}
 }
 
