@@ -43,8 +43,10 @@ func (u *Map[T, T2]) Set(key T, value T2) {
 		u.values = make(map[T]T2)
 		u.order = make([]T, 0)
 	}
+	if _, ok := u.values[key]; !ok {
+		u.order = append(u.order, key)
+	}
 	u.values[key] = value
-	u.order = append(u.order, key)
 }
 
 // Delete a value from the map
